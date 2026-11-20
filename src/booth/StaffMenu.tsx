@@ -15,6 +15,7 @@ export function StaffMenu({ config, onClose, onSave }: Props) {
   const [askName, setAskName] = useState(config.askName)
   const [touchKeyboard, setTouchKeyboard] = useState(config.touchKeyboard)
   const [size, setSize] = useState<BoothSize>(config.size)
+  const [dashboardSize, setDashboardSize] = useState<BoothSize>(config.dashboardSize)
 
   const fullscreen = () => {
     const el = document.documentElement
@@ -43,6 +44,12 @@ export function StaffMenu({ config, onClose, onSave }: Props) {
             <option value="medium">Medium</option>
             <option value="large">Large (big screens far away)</option>
           </select>
+          <label className="setup__label" htmlFor="dashboard-size">Dashboard size</label>
+          <select id="dashboard-size" className="setup__input" value={dashboardSize} onChange={(e) => setDashboardSize(e.target.value as BoothSize)}>
+            <option value="small">Small</option>
+            <option value="medium">Medium</option>
+            <option value="large">Large (read from far away)</option>
+          </select>
         </div>
 
         <div className="staff__row">
@@ -65,7 +72,7 @@ export function StaffMenu({ config, onClose, onSave }: Props) {
           submitLabel="Save and restart"
           initial={{ versionId: config.versionId, difficulty: config.difficulty }}
           onStart={(s) => {
-            const next: BoothConfig = { ...config, versionId: s.versionId, setName: s.setName, difficulty: s.difficulty, idleSeconds, askName, touchKeyboard, size }
+            const next: BoothConfig = { ...config, versionId: s.versionId, setName: s.setName, difficulty: s.difficulty, idleSeconds, askName, touchKeyboard, size, dashboardSize }
             saveBoothConfig(next)
             onSave(next)
           }}

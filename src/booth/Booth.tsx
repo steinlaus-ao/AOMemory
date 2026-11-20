@@ -6,7 +6,7 @@ import { DIFFICULTY_PAIRS } from '../game/engine'
 import { MAX_PLAYERS } from '../game/SetupForm'
 import { Game, type GameResult } from '../game/Game'
 import { useLoadedFaces } from '../game/useLoadedFaces'
-import { BOOTH_BOARD, BOOTH_ZOOM, loadBoothConfig, type BoothConfig } from './config'
+import { BOOTH_BOARD, BOOTH_ZOOM, DASHBOARD_SCALE, loadBoothConfig, type BoothConfig } from './config'
 import { DailyBoard, rankText } from '../scores/DailyBoard'
 import { useDailyBoard } from '../scores/useDailyBoard'
 import { StaffMenu } from './StaffMenu'
@@ -88,10 +88,11 @@ export function Booth() {
   }
 
   return (
-    <div className="booth" style={{ '--booth-zoom': BOOTH_ZOOM[config.size], '--booth-board': BOOTH_BOARD[config.size] } as React.CSSProperties} onPointerDown={activity} onKeyDown={activity}>
+    <div className="booth" style={{ '--booth-zoom': BOOTH_ZOOM[config.size], '--booth-board': BOOTH_BOARD[config.size], '--dash': DASHBOARD_SCALE[config.dashboardSize] } as React.CSSProperties} onPointerDown={activity} onKeyDown={activity}>
       <button type="button" className="booth__staff-corner" aria-label="Staff menu" tabIndex={-1} onClick={cornerTap} />
 
       {phase === 'attract' && (
+        <div className="booth-home">
         <button type="button" className="booth-attract" onClick={() => (config.askName ? setPhase('name') : begin(['Guest']))}>
           <span className="booth-attract__brand"><AoLogo variant="white" height={120} /></span>
           <span className="booth-attract__title">Memory</span>
@@ -101,14 +102,12 @@ export function Booth() {
           <span className="booth-attract__cta">Tap to play</span>
           <span className="booth-attract__sub">Sharp mind. Fast hands. Ready?<br />Match the pairs. Race the clock. Set your best time.</span>
         </button>
-      )}
-
-      {phase === 'attract' && (
-        <aside className="booth-attract__scores" aria-labelledby="booth-scores-title">
+        <aside className={`booth-attract__scores booth-attract__scores--${config.dashboardSize}`} aria-labelledby="booth-scores-title">
           <h2 id="booth-scores-title">Fastest Minds <em className="booth-attract__scores-mode">Single Player</em> Dashboard</h2>
           <p className="booth-attract__scores-sub">Today's best times</p>
           <DailyBoard board={daily.board} limit={5} />
         </aside>
+        </div>
       )}
 
       {phase === 'name' && (
