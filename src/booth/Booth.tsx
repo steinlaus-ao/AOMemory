@@ -122,7 +122,7 @@ export function Booth() {
             ))}
           </div>
           <h1>{names.length === 1 ? "What's your name?" : "What are your names?"}</h1>
-          <p>{names.length === 1 ? 'Choose a player name. No real or full name required. Your player name is used only for the game and leaderboard.' : 'Play together on this screen. Take turns, and find a pair to go again.'}</p>
+          <p>{names.length === 1 ? "Enter your nickname or first name. No full names needed! It's only for the game and the leaderboard." : 'Play together on this screen. Take turns, and find a pair to go again.'}</p>
           {names.map((n, i) => (
             <input key={i} aria-label={names.length === 1 ? 'Your name' : `Player ${i + 1} name`} value={n} maxLength={NAME_MAX}
               autoFocus={i === 0} autoComplete="off" className="booth-name__input"
