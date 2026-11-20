@@ -6,17 +6,21 @@
   overscroll-behavior: none; touch-action: manipulation;
 }
 /* Staff menu "Screen size": scales everything inside the booth (text, buttons, keyboard, cards). */
-.booth > :not(.booth__staff-corner) { zoom: var(--booth-zoom, 1); }
+.booth > :not(.booth__staff-corner, .booth-home), .booth-home > .booth-attract { zoom: var(--booth-zoom, 1); }
 .booth .board-area { padding: calc((1 - var(--booth-board, 1)) * 20%) calc((1 - var(--booth-board, 1)) * 50%); }
 .booth__staff-corner {
   position: absolute; top: 0; left: 0; width: 72px; height: 72px; z-index: 30;
   background: transparent; border: 0; padding: 0; cursor: default; opacity: 0;
 }
 
-.booth-attract {
-  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3vh;
+/* Attract screen: "Tap to play" plus the dashboard beside it (wide screens) or under it (narrow screens). */
+.booth-home {
+  flex: 1; min-height: 0; display: flex; align-items: flex-end;
   background: radial-gradient(ellipse at 50% 30%, var(--ao-blue), var(--ao-dark-blue) 70%);
-  border: 0; color: inherit; font: inherit; cursor: pointer; padding: 4vh 4vw;
+}
+.booth-attract {
+  flex: 1; align-self: stretch; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3vh;
+  background: transparent; border: 0; color: inherit; font: inherit; cursor: pointer; padding: 4vh 4vw;
 }
 .booth-attract__brand img { height: clamp(64px, 14vh, 200px); width: auto; }
 .booth-attract__title { font-size: clamp(32px, 7vh, 110px); font-weight: var(--weight-semibold); letter-spacing: -0.01em; }
@@ -43,19 +47,43 @@
 @media (prefers-reduced-motion: reduce) { :root:not([data-motion='full']) .booth-attract__cta { animation: none; } }
 .booth-attract__sub { font-size: clamp(16px, 2.4vh, 32px); opacity: 0.9; text-align: center; line-height: 1.5; }
 
+/* "Fastest Minds" dashboard. Its size comes from the staff menu "Dashboard size" (--dash),
+   not from "Screen size", so staff can make it bigger without growing the rest of the booth. */
 .booth-attract__scores {
-  position: absolute; right: 3vw; bottom: 4vh; width: min(30vw, 480px);
-  background: rgb(255 255 255 / 0.08); border-radius: var(--radius-card); padding: 2vh 1.5vw;
+  flex-shrink: 0; margin: 0 3vw 4vh 0; width: min(32vw, 500px);
+  background: rgb(255 255 255 / 0.1); border-radius: var(--radius-card); padding: 2vh 1.5vw;
   pointer-events: none;
 }
-.booth-attract__scores h2 { color: var(--ao-yellow); font-size: clamp(18px, 2.6vh, 36px); margin-bottom: 0.3vh; line-height: 1.2; }
+.booth-attract__scores--medium { width: min(38vw, 640px); }
+.booth-attract__scores--large { width: min(46vw, 820px); }
+.booth-attract__scores h2 {
+  color: var(--ao-yellow); margin-bottom: 0.3vh; line-height: 1.2;
+  font-size: max(20px, calc(clamp(18px, 2.6vh, 36px) * var(--dash, 1)));
+}
 .booth-attract__scores-mode { font-style: italic; font-weight: 500; font-size: 0.78em; }
-.booth-attract__scores-sub { margin: 0 0 1vh; font-size: clamp(13px, 1.7vh, 24px); opacity: 0.85; }
-@media (max-width: 900px), (max-height: 600px) { .booth-attract__scores { display: none; } }
+.booth-attract__scores-sub { margin: 0 0 1vh; font-size: max(15px, calc(clamp(13px, 1.7vh, 24px) * var(--dash, 1))); opacity: 0.9; }
+.booth-attract__scores .daily-board__moves { opacity: 0.9; }
 
-.booth .daily-board { font-size: clamp(14px, 2vh, 28px); }
-.booth-attract__scores .daily-board li:nth-child(odd) { background: rgb(255 255 255 / 0.06); }
-.booth .daily-board__empty, .booth .daily-board__note { font-size: clamp(14px, 2vh, 28px); }
+/* Narrow screens (phones, portrait tablets): the dashboard sits under "Tap to play"; the page scrolls if needed. */
+@media (max-width: 700px), (max-width: 900px) and (orientation: portrait) {
+  .booth-home { flex-direction: column; align-items: center; overflow-y: auto; }
+  .booth-attract { flex: 1 0 auto; align-self: stretch; padding-bottom: 3vh; }
+  .booth-attract__scores,
+  .booth-attract__scores--medium,
+  .booth-attract__scores--large { width: min(640px, calc(100% - 32px)); margin: 0 16px 16px; padding: 12px 16px; }
+}
+/* Short screens (phones on their side): show the top 3 so the list fits. */
+@media (max-height: 500px) {
+  .booth-attract__scores { margin-bottom: 2vh; padding: 10px 14px; }
+  .booth-attract__scores .daily-board li:nth-child(n + 4) { display: none; }
+}
+
+/* Score lists (attract dashboard and results panel) follow "Dashboard size". */
+.booth .daily-board, .booth .daily-board__empty, .booth .daily-board__note {
+  font-size: max(16px, calc(clamp(14px, 2vh, 28px) * var(--dash, 1)));
+}
+.booth-attract__scores .daily-board li:nth-child(odd) { background: rgb(255 255 255 / 0.08); }
+.booth .results { width: min(calc(560px * max(1, var(--dash, 1))), 100%); }
 
 .booth-name {
   flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3vh;
@@ -95,7 +123,9 @@
   background: transparent; color: var(--ao-white); border: 0; cursor: pointer;
 }
 .booth-players__opt[aria-checked='true'] { background: var(--ao-yellow); color: var(--ao-blue); }
-.booth .scoreboard__player { font-size: max(16px, 2.2vh); }
+.booth .scoreboard__player { font-size: max(16px, calc(2.2vh * var(--dash, 1))); }
+.booth .scoreboard__pairs { font-size: 1.4em; }
+.booth .scoreboard__turn { font-size: 0.75em; }
 
 /* On-screen keyboard (staff menu: "On-screen keyboard"). Sized for fingers on a big screen. */
 .touch-kb {

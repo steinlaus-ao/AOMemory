@@ -7,6 +7,9 @@ export const BOOTH_ZOOM: Record<BoothSize, number> = { small: 0.7, medium: 0.82,
 /** Share of the screen the card board may use per size. */
 export const BOOTH_BOARD: Record<BoothSize, number> = { small: 0.72, medium: 0.86, large: 1 }
 
+/** Text scale of the "Fastest Minds" dashboard and other score lists per dashboard size. */
+export const DASHBOARD_SCALE: Record<BoothSize, number> = { small: 0.85, medium: 1.1, large: 1.4 }
+
 export type BoothConfig = {
   versionId: string
   setName: string
@@ -18,10 +21,12 @@ export type BoothConfig = {
   touchKeyboard: boolean
   /** Overall size of text, buttons and keyboard on the booth screen. */
   size: BoothSize
+  /** Size of the player dashboard (today's best times, player scores). */
+  dashboardSize: BoothSize
 }
 
 export const DEFAULT_BOOTH: BoothConfig = {
-  versionId: DEMO_OPTION.versionId, setName: DEMO_OPTION.name, difficulty: 'medium', idleSeconds: 45, askName: true, touchKeyboard: true, size: 'medium',
+  versionId: DEMO_OPTION.versionId, setName: DEMO_OPTION.name, difficulty: 'medium', idleSeconds: 45, askName: true, touchKeyboard: true, size: 'medium', dashboardSize: 'medium',
 }
 
 const KEY = 'ao-memory:booth-config'
