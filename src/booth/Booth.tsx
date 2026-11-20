@@ -103,9 +103,9 @@ export function Booth() {
           <span className="booth-attract__sub">Sharp mind. Fast hands. Ready?<br />Match the pairs. Race the clock. Set your best time.</span>
         </button>
         <aside className={`booth-attract__scores booth-attract__scores--${config.dashboardSize}`} aria-labelledby="booth-scores-title">
-          <h2 id="booth-scores-title">Fastest Minds <em className="booth-attract__scores-mode">Single Player</em> Dashboard</h2>
-          <p className="booth-attract__scores-sub">Today's best times</p>
-          <DailyBoard board={daily.board} limit={5} />
+          <h2 id="booth-scores-title">Beat the Clock: Today's Fastest Minds</h2>
+          <p className="booth-attract__scores-sub">Single-player best times</p>
+          <DailyBoard board={daily.board} limit={10} />
         </aside>
         </div>
       )}
